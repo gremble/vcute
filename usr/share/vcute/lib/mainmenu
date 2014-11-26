@@ -1,12 +1,39 @@
 #!/bin/sh
-# $Id: menubox4,v 1.8 2010/01/13 10:20:03 tom Exp $
+
 function mainMenu {
 
+#consider converting from and to number formats with numfmt --from=??
 
-TEST="'boobs' 'bobs boobs' 'his boobs'"
+MENUMASS=( )
+MENUMASSPOSS=0
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+#name
+MENUMASS[$MENUMASSPOSS]="${GUESTS[$i]}"
+((MENUMASSPOSS++))
+#columns
+if [ "${GUESTS_RUNNING[$i]}" = "1" ]; then
+MENUMASS[$MENUMASSPOSS]="${CROSS}%"
+else
+MENUMASS[$MENUMASSPOSS]="${TIC}%"
+fi
+if [ "${GUESTS_MARKED[$i]}" = "1" ]; then
+MENUMASS[$MENUMASSPOSS]="${MENUMASS[$MENUMASSPOSS]}${CROSS}%"
+else
+MENUMASS[$MENUMASSPOSS]="${MENUMASS[$MENUMASSPOSS]}${TIC}%"
+fi
+MENUMASS[$MENUMASSPOSS]="${MENUMASS[$MENUMASSPOSS]}$(cat $VCONF_LOC/${GUESTS[$i]}/context)"
+((MENUMASSPOSS++))
+#repeat name for now, add details later
+MENUMASS[$MENUMASSPOSS]="${GUESTS[$i]}"
+((MENUMASSPOSS++))
+done
 
-$DIALOG --clear --item-help --title "$(cat $LANG_LOC/name) - Pick a guest or option" "$@"  --menu "Welcome" 30 75 68 `echo ${TEST}`
 
-retval=$?
+$DIALOG --clear --default-item "${GUESTS[0]}" --column-separator "%" --item-help --title "$(cat $LANG_LOC/name) - Pick a guest or option" --menu "Welcome" 18 75 68\
+ "NAME" "On%Mark%XID" ""\
+ "${MENUMASS[@]}"
+
+echo $?
+
 
 }

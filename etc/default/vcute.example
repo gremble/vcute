@@ -4,9 +4,9 @@ INSTALL_DIR="/root/vcute"
 DIALOG=/usr/bin/dialog
 CONF_LOC=${INSTALL_DIR}/etc/vcute
 #fix - get this from conf
-VDIR_LOC=${INSTALL_DIR}/home/vservers
+VDIR_LOC=/home/vservers
 #fix - get this from conf (compile output of util-vserver?)
-VCONF_LOC=${INSTALL_DIR}/etc/vservers
+VCONF_LOC=/etc/vservers
 DEFAULT_LOC=${INSTALL_DIR}/etc/default/vcute
 LIB_LOC=${INSTALL_DIR}/usr/share/vcute/lib
 LANG_LOC=${INSTALL_DIR}/usr/share/vcute/lang/en_GB
