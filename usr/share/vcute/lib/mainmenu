@@ -1,0 +1,17 @@
+#!/bin/sh
+# $Id: menubox4,v 1.8 2010/01/13 10:20:03 tom Exp $
+function mainMenu {
+
+$DIALOG --clear --item-help --title "$(cat $LANG_LOC/name) - Main Menu" "$@" \
+        --menu "Hi, this is a menu box.\n\
+          Choose the OS you like:" auto auto auto \
+        "Linux"  "The Great Unix Clone for 386/486"    "Why use Linux?" \
+        "NetBSD" "Another free Unix Clone for 386/486" "Or NetBSD?" \
+        "OS/2"   "IBM OS/2"                            "aka \"Warp\"" \
+        "WIN NT" "Microsoft Windows NT"                "hmm" \
+        "PCDOS"  "IBM PC DOS"                          "clone of a clone" \
+        "MSDOS"  "Microsoft DOS"                       "DOS: Disk Operating System, originally for an IBM contract, hence using the same jargon"
+
+retval=$?
+
+}

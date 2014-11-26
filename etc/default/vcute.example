@@ -1,5 +1,5 @@
 #!/bin/bash
-INSTALL_DIR=""
+INSTALL_DIR="/root/vcute"
 
 DIALOG=/usr/bin/dialog
 CONF_LOC=${INSTALL_DIR}/etc/vcute

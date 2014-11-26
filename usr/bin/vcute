@@ -2,6 +2,76 @@
 
 # set vars and load libraries
 
-
+if  [ "$1" = "--debug" ]; then 
+DEBUG=1
+fi
 
 . /etc/default/vcute
+
+if [ "$DEBUG" = "1" ]; then
+   echo "Set vars..."
+   echo "CONF_LOC    =${CONF_LOC} : where VCUTE config lives"
+   echo "VDIR_LOC    =${VDIR_LOC} : where all the vserver guests live"
+   echo "VCONF_LOC   =${VCONF_LOC} : where vserver conf lives"
+   echo "DEFAULT_LOC =${DEFAULT_LOC} : where default vars live (the ones in this list)"
+   echo "LIB_LOC     =${LIB_LOC} : where the libraries live"
+   echo "LANG_LOC    =${LANG_LOC} : where the language files live"
+   echo ""
+fi
+
+for LIB_FILE in ${LIB_LOC}/*; do
+   if [ "$DEBUG" = "1" ]; then
+      echo "Loading $LIB_FILE"
+   fi
+   . $LIB_FILE
+done
+
+TIC="$(cat $LANG_LOC/tic)"
+
+a="$(vsomething -q echo -- --all)"
+b="$(vsomething -q echo -- --marked)"
+c="$(vsomething -q echo -- --running)"
+
+GUESTS=( )
+for f in "${a}"; do
+GUESTS+=($f)
+done
+
+LIST_MARKED=( )
+for f in "${b}"; do
+LIST_MARKED+=($f)
+done
+
+LIST_RUNNING=( )
+for f in "${c}"; do
+LIST_RUNNING+=($f)
+done
+
+
+#find out which are marked
+GUESTS_MARKED=( )
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+containsElement "${GUESTS[i]}" "${LIST_MARKED[@]}"
+GUESTS_MARKED[$i]=$?
+done
+
+
+#find out which are running
+GUESTS_RUNNING=( )
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+containsElement "${GUESTS[i]}" "${LIST_RUNNING[@]}"
+GUESTS_RUNNING[$i]=$?
+done
+
+
+if [ "$DEBUG" = "1" ]; then
+  echo "GUESTS_ALL[$i] = name :: marked :: running"
+for (( i=0; i<${#GUESTS[@]}; i++ ));
+do
+  echo "GUESTS[$i] = ${GUESTS[$i]} :: ${GUESTS_MARKED[$i]} :: ${GUESTS_RUNNING[$i]}"
+done
+fi
+
+
+
+mainMenu
