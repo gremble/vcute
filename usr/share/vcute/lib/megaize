@@ -1,0 +1,10 @@
+#!/bin/sh
+
+function megaize {
+
+#get the thing we can to megaize
+RETURN_VAL="$(($1 / 1048576))m"
+
+
+return
+}

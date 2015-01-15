@@ -1,0 +1,67 @@
+#!/bin/sh
+
+function collateBasicInfo {
+
+a="$(vsomething -q echo -- --all)"
+b="$(vsomething -q echo -- --marked)"
+c="$(vsomething -q echo -- --running)"
+
+GUESTS=( )
+for f in "${a}"; do
+GUESTS+=($f)
+done
+
+LIST_MARKED=( )
+for f in "${b}"; do
+LIST_MARKED+=($f)
+done
+
+LIST_RUNNING=( )
+for f in "${c}"; do
+LIST_RUNNING+=($f)
+done
+
+
+#find out which are marked
+GUESTS_MARKED=( )
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+containsElement "${GUESTS[i]}" "${LIST_MARKED[@]}"
+GUESTS_MARKED[$i]=$?
+done
+#find out which are running
+GUESTS_RUNNING=( )
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+containsElement "${GUESTS[i]}" "${LIST_RUNNING[@]}"
+GUESTS_RUNNING[$i]=$?
+done
+#find out memory limit
+GUESTS_MEMALLOC=( )
+GUESTS_MEMALLOC_H=( )
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+GUESTS_MEMALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[i]}/cgroup/memory.limit_in_bytes)
+cgroupSerialize "${GUESTS_MEMALLOC[$i]}"
+GUESTS_MEMALLOC[$i]=${RETURN_VAL}
+megaize "${GUESTS_MEMALLOC[$i]}"
+GUESTS_MEMALLOC_H[$i]=${RETURN_VAL}
+done
+
+GUESTS_SWPALLOC=( )
+GUESTS_SWPALLOC_H=( )
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+GUESTS_SWPALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[i]}/cgroup/memory.memsw.limit_in_bytes)
+cgroupSerialize "${GUESTS_SWPALLOC[$i]}"
+GUESTS_SWPALLOC[$i]=${RETURN_VAL}
+megaize "${GUESTS_SWPALLOC[$i]}"
+GUESTS_SWPALLOC_H[$i]=${RETURN_VAL}
+done
+
+
+if [ "$DEBUG" = "1" ]; then
+  echo "GUESTS_ALL[$i] = name :: marked :: running"
+for (( i=0; i<${#GUESTS[@]}; i++ ));
+do
+  echo "GUESTS[$i] = ${GUESTS[$i]} :: ${GUESTS_MARKED[$i]} :: ${GUESTS_RUNNING[$i]}"
+done
+fi
+
+}

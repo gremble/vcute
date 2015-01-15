@@ -2,38 +2,41 @@
 
 function mainMenu {
 
-#consider converting from and to number formats with numfmt --from=??
+# Consider converting from and to number formats with numfmt --from=??
 
+# This section fills an array which is then put into $DIALOG
+# it appears the only way to put a bunch of separate inputs 
+# into a command.
 MENUMASS=( )
-MENUMASSPOSS=0
+p=0
 for (( i=0; i<${#GUESTS[@]}; i++ )); do
 #name
-MENUMASS[$MENUMASSPOSS]="${GUESTS[$i]}"
-((MENUMASSPOSS++))
+MENUMASS[$p]="${GUESTS[$i]}"
+((p++))
 #columns
 if [ "${GUESTS_RUNNING[$i]}" = "1" ]; then
-MENUMASS[$MENUMASSPOSS]="${CROSS}%"
+MENUMASS[$p]="${CROSS}%"
 else
-MENUMASS[$MENUMASSPOSS]="${TIC}%"
+MENUMASS[$p]="${TIC}%"
 fi
 if [ "${GUESTS_MARKED[$i]}" = "1" ]; then
-MENUMASS[$MENUMASSPOSS]="${MENUMASS[$MENUMASSPOSS]}${CROSS}%"
+MENUMASS[$p]="${MENUMASS[$p]}${CROSS}%"
 else
-MENUMASS[$MENUMASSPOSS]="${MENUMASS[$MENUMASSPOSS]}${TIC}%"
+MENUMASS[$p]="${MENUMASS[$p]}${TIC}%"
 fi
-MENUMASS[$MENUMASSPOSS]="${MENUMASS[$MENUMASSPOSS]}$(cat $VCONF_LOC/${GUESTS[$i]}/context)"
-((MENUMASSPOSS++))
-#repeat name for now, add details later
-MENUMASS[$MENUMASSPOSS]="${GUESTS[$i]}"
-((MENUMASSPOSS++))
+MENUMASS[$p]="${MENUMASS[$p]}$(cat $VCONF_LOC/${GUESTS[$i]}/context)"
+((p++))
+#give item number for now, add details later
+MENUMASS[$p]="${i}- RSS Limit:${GUESTS_MEMALLOC_H[$i]} SWP Limit:${GUESTS_SWPALLOC_H[$i]} "
+((p++))
 done
-
 
 $DIALOG --clear --default-item "${GUESTS[0]}" --column-separator "%" --item-help --title "$(cat $LANG_LOC/name) - Pick a guest or option" --menu "Welcome" 18 75 68\
  "NAME" "On%Mark%XID" ""\
- "${MENUMASS[@]}"
+ "${MENUMASS[@]}" 2>"${INPUT}"
 
-echo $?
+SELECTED=$(<"${INPUT}")
 
+echo "${SELECTED}"
 
 }
