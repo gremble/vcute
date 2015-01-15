@@ -10,12 +10,14 @@ fi
 
 if [ "$DEBUG" = "1" ]; then
    echo "Set vars..."
-   echo "CONF_LOC    =${CONF_LOC} : where VCUTE config lives"
-   echo "VDIR_LOC    =${VDIR_LOC} : where all the vserver guests live"
-   echo "VCONF_LOC   =${VCONF_LOC} : where vserver conf lives"
-   echo "DEFAULT_LOC =${DEFAULT_LOC} : where default vars live (the ones in this list)"
-   echo "LIB_LOC     =${LIB_LOC} : where the libraries live"
-   echo "LANG_LOC    =${LANG_LOC} : where the language files live"
+   echo "CONF_LOC      =${CONF_LOC} : where VCUTE config lives"
+   echo "VDIR_LOC      =${VDIR_LOC} : where all the vserver guests live"
+   echo "VCONF_LOC     =${VCONF_LOC} : where vserver conf lives"
+   echo "DEFAULT_LOC   =${DEFAULT_LOC} : where default vars live (the ones in this list)"
+   echo "LIB_LOC       =${LIB_LOC} : where the libraries live"
+   echo "LANG_LOC      =${LANG_LOC} : where the language files live"
+   echo "CGROUP_LOC    =${CGROUP_LOC} : where the language files live"
+   echo "CGROUP_FORMAT =${CGROUP_FORMAT} : same tree or split mount?"
    echo ""
 fi
 
@@ -27,14 +29,32 @@ for LIB_FILE in ${LIB_LOC}/*; do
    . $LIB_FILE
 done
 
+# Which characters to use as a ticks/crosses
 TIC="$(cat $LANG_LOC/tic)"
 CROSS="$(cat $LANG_LOC/cross)"
 
 # Store menu options selected by the user
 INPUT=/tmp/vcute.in.$$
-
 #Dunno yet - but seems a good idea
 OUTPUT=/tmp/vcute.out.$$
 
+
+###
+# Main 'loop' - or at least will be a loop at some point
+###
+
+# Cycle though all guests and get info on them
 collateBasicInfo
+# Select a guest please...
 mainMenu
+# set the local ID - that is, position in array, of the selected server
+VSID="${RETURN_VAL}"
+if [ "$DEBUG" = "1" ]; then
+  echo "${VSID} : ${GUESTS[$VSID]}"
+fi
+
+# gather ALL info for this guest
+getExtendedInfo ${VSID}
+# give a menu of options for this guest
+guestConfigure ${VSID}
+

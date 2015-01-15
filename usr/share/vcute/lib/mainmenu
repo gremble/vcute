@@ -8,7 +8,8 @@ function mainMenu {
 # it appears the only way to put a bunch of separate inputs 
 # into a command.
 MENUMASS=( )
-p=0
+local p=0
+local i=0
 for (( i=0; i<${#GUESTS[@]}; i++ )); do
 #name
 MENUMASS[$p]="${GUESTS[$i]}"
@@ -37,6 +38,13 @@ $DIALOG --clear --default-item "${GUESTS[0]}" --column-separator "%" --item-help
 
 SELECTED=$(<"${INPUT}")
 
-echo "${SELECTED}"
+# TODO if exit then exit, and so on
+
+# Convert selected server into the internal ID
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+if [ "${GUESTS[$i]}" = "${SELECTED}" ]; then
+RETURN_VAL="${i}"
+fi
+done
 
 }
