@@ -1,21 +1,57 @@
-#!/bin/sh
+#!/bin/bash
 
 
 function guestConfigure {
 
+local MENUMASS=( )
+local p=0
+local i=$1
+
+#TODO replace with strings
+
+#Guest name
+MENUMASS[$p]="Basename"
+((p++))
+MENUMASS[$p]="${GUESTS[$VSID]}"
+((p++))
+MENUMASS[$p]="Basename of server's config dir"
+((p++))
+
+#Node name
+MENUMASS[$p]="Host name"
+((p++))
+MENUMASS[$p]="$(cat $VCONF_LOC/${GUESTS[$i]}/uts/nodename)"
+((p++))
+MENUMASS[$p]="The hostname as given in /uts/nodename"
+((p++))
+
+
+#Name
+MENUMASS[$p]="Guest name"
+((p++))
+#TODO, if exists then else = basename
+MENUMASS[$p]="$(cat $VCONF_LOC/${GUESTS[$i]}/name)"
+((p++))
+MENUMASS[$p]="The guests name, as it will appear in vserver-stat for example"
+((p++))
+
+#Memory name
+MENUMASS[$p]="Memory Allocation"
+((p++))
+MENUMASS[$p]="${GUESTS_MEMALLOC_H[$i]}"
+((p++))
+MENUMASS[$p]="Current Use: ${GUESTS_MEMCURRENT_H[$i]}  Max Historical Use: ${GUESTS_MEMMAX_H[$i]}"
+((p++))
 
 
 
+$DIALOG --clear --column-separator "%" --item-help\
+ --title "$(cat $LANG_LOC/name) - ${GUESTS[$VSID]}" --menu "Welcome" 22 75 68\
+ "${MENUMASS[@]}" 2>"${INPUT}"
 
 
-
-
-
-
-
-
+RETURN_VAL=$(<"${INPUT}")
 
 return
-
 }
 

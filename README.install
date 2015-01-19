@@ -1,0 +1,21 @@
+VCUTE Install GUIDE
+===================
+
+It's hoped that the installer will soon help one through this, for now, you
+can run VCUTE directly from the git checkout. The main thing to do is to copy
+
+<git clone dir>/etc/default/vcute
+
+to
+
+/etc/default/vcute
+
+and edit the variables to match your requirements. The main one to alter will
+be INSTALL_DIR="" which should be set to where you cloned VCUTE.
+
+Note also that the cgroup format needs to be set, for a newer SystemD based host
+the variables should set like so:
+
+CGROUP_LOC="/sys/fs/cgroup"
+CGROUP_FORMAT="split"
+

@@ -3,12 +3,11 @@
 function cgroupLocation {
 
 #take a cgroup name, and give it's location
-
 local SPLIT="$1"
 
 # split or same?
 if [ "${CGROUP_FORMAT}" != "split" ] ; then
-SPLIT=""
+     SPLIT=""
 fi
 
 if [ "$DEBUG" = "1" ]; then

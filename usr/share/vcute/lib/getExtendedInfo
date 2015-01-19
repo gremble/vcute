@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-function gatherExtendedInfo {
+function getExtendedInfo {
 
 
 
@@ -12,9 +12,6 @@ function gatherExtendedInfo {
 
 
 
-
-
-
+echo -n
 return
-
 }

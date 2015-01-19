@@ -48,24 +48,29 @@ collateBasicInfo
 mainMenu
 # set the local ID - that is, position in array, of the selected server
 VSID="${RETURN_VAL}"
+
 if [ "$DEBUG" = "1" ]; then
-  echo "${VSID} : ${GUESTS[$VSID]}"
+  echo "${VSID}  ${GUESTS[$VSID]}"
 fi
 
 # gather ALL info for this guest
-getExtendedInfo ${VSID}
+getExtendedInfo "${VSID}"
 # give a menu of options for this guest
-guestConfigure ${VSID}
+guestConfigure "${VSID}"
 CONFIG_ITEM="${RETURN_VAL}"
 #take the result and config that particular element
 case $CONFIG_ITEM in
 mem)
-configMem
+configMem "${VSID}"
 ;;
 mark)
-configMark
+configMark "${VSID}"
 ;;
 stat)
-configStats
+configStats "${VSID}"
+;;
+*)
+configNo "${VSID}"
 ;;
 esac
+

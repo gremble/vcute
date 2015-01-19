@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+function configNo {
+
+$DIALOG --msgbox  "$(cat $LANG_LOC/name) doesn't support editing this guest parameter." 10 30
+
+return
+}

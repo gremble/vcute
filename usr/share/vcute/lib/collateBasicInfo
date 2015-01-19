@@ -50,18 +50,6 @@ GUESTS_MEMALLOC[$i]=${RETURN_VAL}
 megaize "${GUESTS_MEMALLOC[$i]}"
 GUESTS_MEMALLOC_H[$i]=${RETURN_VAL}
 done
-
-#find out memory swap limit
-GUESTS_SWPALLOC=( )
-GUESTS_SWPALLOC_H=( )
-for (( i=0; i<${#GUESTS[@]}; i++ )); do
-GUESTS_SWPALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[$i]}/cgroup/memory.memsw.limit_in_bytes)
-cgroupSerialize "${GUESTS_SWPALLOC[$i]}"
-GUESTS_SWPALLOC[$i]=${RETURN_VAL}
-megaize "${GUESTS_SWPALLOC[$i]}"
-GUESTS_SWPALLOC_H[$i]=${RETURN_VAL}
-done
-
 #find current memory limit
 GUESTS_MEMCURRENT=( )
 GUESTS_MEMCURRENT_H=( )
@@ -72,12 +60,10 @@ for (( i=0; i<${#GUESTS[@]}; i++ )); do
 	GUESTS_MEMCURRENT[$i]=$(cat ${CLOC}/${GUESTS[$i]}/memory.usage_in_bytes)
 	megaize "${GUESTS_MEMCURRENT[$i]}"
 	GUESTS_MEMCURRENT_H[$i]=${RETURN_VAL}
-	echo -n " ... "
    else
 	GUESTS_MEMCURRENT_H[$i]="---"
    fi
 done
-
 #find current memory max
 GUESTS_MEMMAX=( )
 GUESTS_MEMMAX_H=( )
@@ -88,16 +74,56 @@ for (( i=0; i<${#GUESTS[@]}; i++ )); do
 	GUESTS_MEMMAX[$i]=$(cat ${CLOC}/${GUESTS[$i]}/memory.max_usage_in_bytes)
 	megaize "${GUESTS_MEMMAX[$i]}"
 	GUESTS_MEMMAX_H[$i]=${RETURN_VAL}
-	echo -n " ... "
    else
 	GUESTS_MEMMAX_H[$i]="---"
    fi
 done
-
-
-
-
-
+#find out memory swap limit
+GUESTS_SWPALLOC=( )
+GUESTS_SWPALLOC_H=( )
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+GUESTS_SWPALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[$i]}/cgroup/memory.memsw.limit_in_bytes)
+cgroupSerialize "${GUESTS_SWPALLOC[$i]}"
+GUESTS_SWPALLOC[$i]=${RETURN_VAL}
+megaize "${GUESTS_SWPALLOC[$i]}"
+GUESTS_SWPALLOC_H[$i]=${RETURN_VAL}
+done
+#find current memory limit
+GUESTS_SWPCURRENT=( )
+GUESTS_SWPCURRENT_H=( )
+cgroupLocation memory
+CLOC="${RETURN_VAL}"
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+   if [ "${GUESTS_RUNNING[$i]}" != "1" ] ; then
+      if [ -e "${CLOC}/${GUESTS[$i]}/memory.memsw.usage_in_bytes" ] ; then
+         GUESTS_SWPCURRENT[$i]=$(cat ${CLOC}/${GUESTS[$i]}/memory.memsw.usage_in_bytes)
+         megaize "${GUESTS_SWPCURRENT[$i]}"
+         GUESTS_SWPCURRENT_H[$i]=${RETURN_VAL}
+      else
+         GUESTS_SWPCURRENT_H[$i]="!!!"
+      fi
+   else
+	GUESTS_SWPCURRENT_H[$i]="---"
+   fi
+done
+#find current memory max
+GUESTS_SWPMAX=( )
+GUESTS_SWPMAX_H=( )
+cgroupLocation memory
+CLOC="${RETURN_VAL}"
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+   if [ "${GUESTS_RUNNING[$i]}" != "1" ] ; then
+      if [ -e "${CLOC}/${GUESTS[$i]}/memory.memsw.usage_in_bytes" ] ; then
+         GUESTS_SWPMAX[$i]=$(cat ${CLOC}/${GUESTS[$i]}/memory.memsw.max_usage_in_bytes)
+         megaize "${GUESTS_SWPMAX[$i]}"
+         GUESTS_SWPMAX_H[$i]=${RETURN_VAL}
+      else
+         GUESTS_SWPMAX_H[$i]="!!!"
+      fi
+   else
+	GUESTS_SWPMAX_H[$i]="---"
+   fi
+done
 
 if [ "$DEBUG" = "1" ]; then
   echo "GUESTS_ALL[$i] = name :: marked :: running"
@@ -107,4 +133,5 @@ do
 done
 fi
 
+return
 }
