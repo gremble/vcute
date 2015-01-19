@@ -10,7 +10,8 @@ VCONF_LOC=/etc/vservers
 DEFAULT_LOC=${INSTALL_DIR}/etc/default/vcute
 LIB_LOC=${INSTALL_DIR}/usr/share/vcute/lib
 LANG_LOC=${INSTALL_DIR}/usr/share/vcute/lang/en_GB
-CGROUP_LOC=/dev/cgroup/
+CGROUP_LOC="/dev/cgroup"
 # can be "same" or "split" depending on how the groups are mounted
 CGROUP_FORMAT="same"
+#CGROUP_FORMAT="split"
 

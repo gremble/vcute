@@ -1,0 +1,20 @@
+#!bin/sh
+
+function cgroupLocation {
+
+#take a cgroup name, and give it's location
+
+local SPLIT="$1"
+
+# split or same?
+if [ "${CGROUP_FORMAT}" != "split" ] ; then
+SPLIT=""
+fi
+
+if [ "$DEBUG" = "1" ]; then
+     echo "SPLIT = ${SPLIT}/"
+fi
+
+RETURN_VAL="${CGROUP_LOC}/${SPLIT}"
+
+}

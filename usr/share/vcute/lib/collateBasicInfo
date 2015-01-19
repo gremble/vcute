@@ -61,6 +61,21 @@ megaize "${GUESTS_SWPALLOC[$i]}"
 GUESTS_SWPALLOC_H[$i]=${RETURN_VAL}
 done
 
+#find current memory limit
+GUESTS_MEMCURRENT=( )
+GUESTS_MEMCURRENT_H=( )
+cgroupLocation memory
+echo "$RETURN_VAL"
+exit 1
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+GUESTS_MEMALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[i]}/cgroup/memory.limit_in_bytes)
+cgroupSerialize "${GUESTS_MEMALLOC[$i]}"
+GUESTS_MEMALLOC[$i]=${RETURN_VAL}
+megaize "${GUESTS_MEMALLOC[$i]}"
+GUESTS_MEMALLOC_H[$i]=${RETURN_VAL}
+done
+
+
 
 if [ "$DEBUG" = "1" ]; then
   echo "GUESTS_ALL[$i] = name :: marked :: running"

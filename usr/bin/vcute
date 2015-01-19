@@ -16,8 +16,8 @@ if [ "$DEBUG" = "1" ]; then
    echo "DEFAULT_LOC   =${DEFAULT_LOC} : where default vars live (the ones in this list)"
    echo "LIB_LOC       =${LIB_LOC} : where the libraries live"
    echo "LANG_LOC      =${LANG_LOC} : where the language files live"
-   echo "CGROUP_LOC    =${CGROUP_LOC} : where the language files live"
-   echo "CGROUP_FORMAT =${CGROUP_FORMAT} : same tree or split mount?"
+   echo "CGROUP_LOC    =${CGROUP_LOC} : where the cgroup files live"
+   echo "CGROUP_FORMAT =${CGROUP_FORMAT} : _same_ tree or _split_ mount?"
    echo ""
 fi
 
@@ -58,3 +58,7 @@ getExtendedInfo ${VSID}
 # give a menu of options for this guest
 guestConfigure ${VSID}
 
+#take the result and config that particular element
+configMem
+configMark
+configStats
