@@ -28,7 +28,7 @@ fi
 MENUMASS[$p]="${MENUMASS[$p]}$(cat $VCONF_LOC/${GUESTS[$i]}/context)"
 ((p++))
 #give item number for now, add details later
-MENUMASS[$p]="${i}- RSS Limit:${GUESTS_MEMALLOC_H[$i]} SWP Limit:${GUESTS_SWPALLOC_H[$i]} "
+MENUMASS[$p]="${i}- RSS: ${GUESTS_MEMALLOC_H[$i]}/${GUESTS_MEMCURRENT_H[$i]}/${GUESTS_MEMMAX_H[$i]} SWP: ${GUESTS_SWPALLOC_H[$i]} "
 ((p++))
 done
 

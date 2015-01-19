@@ -44,17 +44,18 @@ done
 GUESTS_MEMALLOC=( )
 GUESTS_MEMALLOC_H=( )
 for (( i=0; i<${#GUESTS[@]}; i++ )); do
-GUESTS_MEMALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[i]}/cgroup/memory.limit_in_bytes)
+GUESTS_MEMALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[$i]}/cgroup/memory.limit_in_bytes)
 cgroupSerialize "${GUESTS_MEMALLOC[$i]}"
 GUESTS_MEMALLOC[$i]=${RETURN_VAL}
 megaize "${GUESTS_MEMALLOC[$i]}"
 GUESTS_MEMALLOC_H[$i]=${RETURN_VAL}
 done
+
 #find out memory swap limit
 GUESTS_SWPALLOC=( )
 GUESTS_SWPALLOC_H=( )
 for (( i=0; i<${#GUESTS[@]}; i++ )); do
-GUESTS_SWPALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[i]}/cgroup/memory.memsw.limit_in_bytes)
+GUESTS_SWPALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[$i]}/cgroup/memory.memsw.limit_in_bytes)
 cgroupSerialize "${GUESTS_SWPALLOC[$i]}"
 GUESTS_SWPALLOC[$i]=${RETURN_VAL}
 megaize "${GUESTS_SWPALLOC[$i]}"
@@ -65,15 +66,36 @@ done
 GUESTS_MEMCURRENT=( )
 GUESTS_MEMCURRENT_H=( )
 cgroupLocation memory
-echo "$RETURN_VAL"
-exit 1
+CLOC="${RETURN_VAL}"
 for (( i=0; i<${#GUESTS[@]}; i++ )); do
-GUESTS_MEMALLOC[$i]=$(cat ${VCONF_LOC}/${GUESTS[i]}/cgroup/memory.limit_in_bytes)
-cgroupSerialize "${GUESTS_MEMALLOC[$i]}"
-GUESTS_MEMALLOC[$i]=${RETURN_VAL}
-megaize "${GUESTS_MEMALLOC[$i]}"
-GUESTS_MEMALLOC_H[$i]=${RETURN_VAL}
+   if [ "${GUESTS_RUNNING[$i]}" != "1" ] ; then
+	GUESTS_MEMCURRENT[$i]=$(cat ${CLOC}/${GUESTS[$i]}/memory.usage_in_bytes)
+	megaize "${GUESTS_MEMCURRENT[$i]}"
+	GUESTS_MEMCURRENT_H[$i]=${RETURN_VAL}
+	echo -n " ... "
+   else
+	GUESTS_MEMCURRENT_H[$i]="---"
+   fi
 done
+
+#find current memory max
+GUESTS_MEMMAX=( )
+GUESTS_MEMMAX_H=( )
+cgroupLocation memory
+CLOC="${RETURN_VAL}"
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+   if [ "${GUESTS_RUNNING[$i]}" != "1" ] ; then
+	GUESTS_MEMMAX[$i]=$(cat ${CLOC}/${GUESTS[$i]}/memory.max_usage_in_bytes)
+	megaize "${GUESTS_MEMMAX[$i]}"
+	GUESTS_MEMMAX_H[$i]=${RETURN_VAL}
+	echo -n " ... "
+   else
+	GUESTS_MEMMAX_H[$i]="---"
+   fi
+done
+
+
+
 
 
 

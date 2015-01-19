@@ -38,7 +38,6 @@ INPUT=/tmp/vcute.in.$$
 #Dunno yet - but seems a good idea
 OUTPUT=/tmp/vcute.out.$$
 
-
 ###
 # Main 'loop' - or at least will be a loop at some point
 ###
@@ -57,8 +56,16 @@ fi
 getExtendedInfo ${VSID}
 # give a menu of options for this guest
 guestConfigure ${VSID}
-
+CONFIG_ITEM="${RETURN_VAL}"
 #take the result and config that particular element
+case $CONFIG_ITEM in
+mem)
 configMem
+;;
+mark)
 configMark
+;;
+stat)
 configStats
+;;
+esac

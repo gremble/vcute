@@ -17,4 +17,5 @@ fi
 
 RETURN_VAL="${CGROUP_LOC}/${SPLIT}"
 
+return
 }
