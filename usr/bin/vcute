@@ -38,10 +38,6 @@ INPUT=/tmp/vcute.in.$$
 #Dunno yet - but seems a good idea
 OUTPUT=/tmp/vcute.out.$$
 
-###
-# Main 'loop' - or at least will be a loop at some point
-###
-
 # Cycle though all guests and get info on them
 collateBasicInfo
 # Select a guest please...
@@ -53,24 +49,32 @@ if [ "$DEBUG" = "1" ]; then
   echo "${VSID}  ${GUESTS[$VSID]}"
 fi
 
-# gather ALL info for this guest
-getExtendedInfo "${VSID}"
-# give a menu of options for this guest
-guestConfigure "${VSID}"
-CONFIG_ITEM="${RETURN_VAL}"
-#take the result and config that particular element
-case $CONFIG_ITEM in
-mem)
-configMem "${VSID}"
-;;
-mark)
-configMark "${VSID}"
-;;
-stat)
-configStats "${VSID}"
-;;
-*)
-configNo "${VSID}"
-;;
-esac
+SUBLOOP=0
+while [  "$SUBLOOP" != "1" ]; do
 
+   # gather ALL info for this guest
+   getExtendedInfo "${VSID}"
+   # give a menu of options for this guest
+   guestConfigure "${VSID}"
+   CONFIG_ITEM="${RETURN_VAL}"
+   #take the result and config that particular element
+   case $CONFIG_ITEM in
+      memall)
+      configMemall "${VSID}"
+      ;;
+#      mark)
+#      configMark "${VSID}"
+#      ;;
+#      stat)
+#      configStats "${VSID}"
+#      ;;
+      exitloop)
+      SUBLOOP=1
+      ;;
+      *)
+      configNo "${VSID}"
+      ;;
+   esac
+collateBasicInfo
+
+done

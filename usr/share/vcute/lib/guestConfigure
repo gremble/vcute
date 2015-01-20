@@ -7,10 +7,16 @@ local MENUMASS=( )
 local p=0
 local i=$1
 
+GC_BASENAME="$(cat $LANG_LOC/gc_basename)"
+GC_HOSTNAME="$(cat $LANG_LOC/gc_hostname)"
+GC_GUESTNAME="$(cat $LANG_LOC/gc_guestname)"
+GC_MEMALL="$(cat $LANG_LOC/gc_memall)"
+GC_EXIT="$(cat $LANG_LOC/gc_exit)"
+
 #TODO replace with strings
 
 #Guest name
-MENUMASS[$p]="Basename"
+MENUMASS[$p]="${GC_BASENAME}"
 ((p++))
 MENUMASS[$p]="${GUESTS[$VSID]}"
 ((p++))
@@ -18,16 +24,15 @@ MENUMASS[$p]="Basename of server's config dir"
 ((p++))
 
 #Node name
-MENUMASS[$p]="Host name"
+MENUMASS[$p]="${GC_HOSTNAME}"
 ((p++))
 MENUMASS[$p]="$(cat $VCONF_LOC/${GUESTS[$i]}/uts/nodename)"
 ((p++))
 MENUMASS[$p]="The hostname as given in /uts/nodename"
 ((p++))
 
-
 #Name
-MENUMASS[$p]="Guest name"
+MENUMASS[$p]="${GC_GUESTNAME}"
 ((p++))
 #TODO, if exists then else = basename
 MENUMASS[$p]="$(cat $VCONF_LOC/${GUESTS[$i]}/name)"
@@ -36,21 +41,45 @@ MENUMASS[$p]="The guests name, as it will appear in vserver-stat for example"
 ((p++))
 
 #Memory name
-MENUMASS[$p]="Memory Allocation"
+MENUMASS[$p]="${GC_MEMALL}"
 ((p++))
 MENUMASS[$p]="${GUESTS_MEMALLOC_H[$i]}"
 ((p++))
 MENUMASS[$p]="Current Use: ${GUESTS_MEMCURRENT_H[$i]}  Max Historical Use: ${GUESTS_MEMMAX_H[$i]}"
 ((p++))
 
-
+#Exit
+MENUMASS[$p]="${GC_EXIT}"
+((p++))
+MENUMASS[$p]=""
+((p++))
+MENUMASS[$p]="Quit to the main menu"
+((p++))
 
 $DIALOG --clear --column-separator "%" --item-help\
  --title "$(cat $LANG_LOC/name) - ${GUESTS[$VSID]}" --menu "Welcome" 22 75 68\
  "${MENUMASS[@]}" 2>"${INPUT}"
 
+local MENUITEM=$(<"${INPUT}")
 
-RETURN_VAL=$(<"${INPUT}")
+
+case "${MENUITEM}" in
+   ${GC_BASENAME})
+      RETURN_VAL="basename"
+   ;;
+   ${GC_HOSTNAME})
+      RETURN_VAL="hostname"
+   ;;
+   ${GC_GUESTNAME})
+      RETURN_VAL="guestname"
+   ;;
+   ${GC_MEMALL})
+      RETURN_VAL="memall"
+   ;;
+   ${GC_EXIT})
+      RETURN_VAL="exitloop"
+   ;;
+esac
 
 return
 }
