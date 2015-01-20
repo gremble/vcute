@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 function guestConfigure {
 
 local MENUMASS=( )
@@ -57,7 +56,8 @@ MENUMASS[$p]="Quit to the main menu"
 ((p++))
 
 $DIALOG --clear --column-separator "%" --item-help\
- --title "$(cat $LANG_LOC/name) - ${GUESTS[$VSID]}" --menu "Welcome" 22 75 68\
+ --backtitle "$(cat $LANG_LOC/name)"\
+ --title "${GUESTS[$VSID]}" --menu "Welcome" 22 75 68\
  "${MENUMASS[@]}" 2>"${INPUT}"
 
 local MENUITEM=$(<"${INPUT}")
