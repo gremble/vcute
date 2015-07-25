@@ -40,6 +40,10 @@ OUTPUT=/tmp/vcute.out.$$
 
 # Cycle though all guests and get info on them
 collateBasicInfo
+
+BIGLOOP=0
+SUBLOOP=0
+while [ "$BIGLOOP" != "1" ]; do
 # Select a guest please...
 mainMenu
 # set the local ID - that is, position in array, of the selected server
@@ -49,7 +53,6 @@ if [ "$DEBUG" = "1" ]; then
   echo "${VSID}  ${GUESTS[$VSID]}"
 fi
 
-SUBLOOP=0
 while [  "$SUBLOOP" != "1" ]; do
 
    # gather ALL info for this guest
@@ -60,7 +63,7 @@ while [  "$SUBLOOP" != "1" ]; do
    #take the result and config that particular element
    case $CONFIG_ITEM in
       memall)
-      configMemall "${VSID}"
+      configMem "${VSID}"
       ;;
 #      mark)
 #      configMark "${VSID}"
@@ -76,5 +79,8 @@ while [  "$SUBLOOP" != "1" ]; do
       ;;
    esac
 collateBasicInfo
+
+done
+
 
 done
