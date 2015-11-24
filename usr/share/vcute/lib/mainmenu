@@ -2,6 +2,9 @@
 
 function mainMenu {
 
+DIALOG_CANCEL="Exit"
+
+
 # Consider converting from and to number formats with numfmt --from=??
 
 # This section fills an array (MENUMASS) which is then put into
@@ -34,14 +37,20 @@ done
 $DIALOG --clear --default-item "${GUESTS[0]}" --column-separator "%"\
  --backtitle "$(cat $LANG_LOC/name)"\
  --item-help\
+ --cancel-label "Exit"\
  --title "Select a Guest" --menu "" 18 75 68\
  "NAME" "Running%Mark%XID" ""\
  "${MENUMASS[@]}"\
- "$(cat $LANG_LOC/gc_exit)" "" "Exit VCUTE" 2>"${INPUT}"
+ 2>"${INPUT}"
+
+#exit if cancel pressed
+if [ "$?" = "1" ]; then
+  exit 0  
+fi
 
 SELECTED=$(<"${INPUT}")
 
-RETURN_VAL="EXIT"
+
 
 # Convert selected server into the internal ID
 for (( i=0; i<${#GUESTS[@]}; i++ )); do

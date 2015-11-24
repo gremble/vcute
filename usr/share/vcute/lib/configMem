@@ -20,8 +20,8 @@ $DIALOG  --title "Memory Configuration" --ok-label "Submit" \
           "Allocated Memory       :" 5 1 "${GUESTS_SWPALLOC_H[$i]}"   5 25 20 0 0 \
           "Current Memory         :" 6 1 "${GUESTS_SWPCURRENT_H[$i]}" 6 25 20 0 2 \
           "Max Used Memory        :" 7 1 "${GUESTS_SWPMAX_H[$i]}"     7 25 20 0 2 \
-          "Apply Live? Y/N        :" 8 1 "Y"                          8 25 1 0 0 \
-          "Aplly persistently? Y/N:" 9 1 "Y"                          9 25 1 0 0 \
+          "Apply Live? y/n        :" 8 1 "y"                          8 25 1 0 0 \
+          "Aplly persistently? y/n:" 9 1 "y"                          9 25 1 0 0 \
 
 
 
