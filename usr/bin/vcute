@@ -52,9 +52,17 @@ mainMenu
 # set the local ID - that is, position in array, of the selected server
 VSID="${RETURN_VAL}"
 
+# There can now be no guest called "EXIT" fix me?!
+if [ "$VSID" = "EXIT" ]; then 
+  if [ "$DEBUG" = "1" ]; then
+   echo "Bye Bye. Exit status = ${?}."
+  fi
+fi
+
 if [ "$DEBUG" = "1" ]; then
-  echo -n "VSID: ${VSID}"
-  echo -n "GUESTS: ${GUESTS[$VSID]}"
+  echo  "VSID: ${VSID}"
+  echo  "GUEST: ${GUESTS[$VSID]}"
+  sleep 2
 fi
 
 while [  "$SUBLOOP" != "1" ]; do
