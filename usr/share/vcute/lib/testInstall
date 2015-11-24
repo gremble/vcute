@@ -2,17 +2,28 @@
 
 function testInstall {
 
-dialog > /dev/null
+dialog > /dev/null 2>&1
 if [ "$?" = "0" ]; then
    if [ "$DEBUG" = "1" ]; then
      echo "Dialog is installed, proceeding."
-     sleep 1
-     return 0
    fi
 else
    echo "Please install 'dialog'."
    exit 1
 fi
+
+if [ -d $CONF_LOC ]; then
+  echo "Install directory exists and contains config."
+  return 0
+else
+  echo "Install directory does not exist or does not contain the expected files, perhaps edit /etc/default/vcute."
+  exit 1
+fi
+
+if [ "$DEBUG" = "1" ]; then
+  sleep 3
+fi
+
 
 }
 
