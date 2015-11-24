@@ -3,6 +3,8 @@
 
 function configMem {
 
+local 
+
 $DIALOG --backtitle "$(cat $LANG_LOC/name)"\
 
 

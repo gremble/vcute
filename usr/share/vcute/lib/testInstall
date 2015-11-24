@@ -1,0 +1,19 @@
+#!/bin/sh
+
+function testInstall {
+
+dialog > /dev/null
+if [ "$?" = "0" ]; then
+   if [ "$DEBUG" = "1" ]; then
+     echo "Dialog is installed, proceeding."
+     sleep 1
+     return 0
+   fi
+else
+   echo "Please install 'dialog'."
+   exit 1
+fi
+
+}
+
+

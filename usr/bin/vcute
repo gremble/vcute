@@ -38,6 +38,9 @@ INPUT=/tmp/vcute.in.$$
 #Dunno yet - but seems a good idea
 OUTPUT=/tmp/vcute.out.$$
 
+#
+testInstall
+
 # Cycle though all guests and get info on them
 collateBasicInfo
 
@@ -50,7 +53,8 @@ mainMenu
 VSID="${RETURN_VAL}"
 
 if [ "$DEBUG" = "1" ]; then
-  echo "${VSID}  ${GUESTS[$VSID]}"
+  echo -n "VSID: ${VSID}"
+  echo -n "GUESTS: ${GUESTS[$VSID]}"
 fi
 
 while [  "$SUBLOOP" != "1" ]; do
