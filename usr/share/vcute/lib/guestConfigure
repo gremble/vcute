@@ -47,21 +47,17 @@ MENUMASS[$p]="${GUESTS_MEMALLOC_H[$i]}"
 MENUMASS[$p]="Current Use: ${GUESTS_MEMCURRENT_H[$i]}  Max Historical Use: ${GUESTS_MEMMAX_H[$i]}"
 ((p++))
 
-#Exit
-MENUMASS[$p]="${GC_EXIT}"
-((p++))
-MENUMASS[$p]=""
-((p++))
-MENUMASS[$p]="Quit to the main menu"
-((p++))
-
 $DIALOG --clear --column-separator "%" --item-help\
  --backtitle "$(cat $LANG_LOC/name)"\
  --title "${GUESTS[$VSID]}" --menu "Welcome" 22 75 68\
  "${MENUMASS[@]}" 2>"${INPUT}"
 
-local MENUITEM=$(<"${INPUT}")
+#exit on cancel
+if [ "$?" = "1" ]; then
+  RETURN_VAL="exitloop"
+fi
 
+local MENUITEM=$(<"${INPUT}")
 
 case "${MENUITEM}" in
    ${GC_BASENAME})
@@ -75,9 +71,6 @@ case "${MENUITEM}" in
    ;;
    ${GC_MEMALL})
       RETURN_VAL="memall"
-   ;;
-   ${GC_EXIT})
-      RETURN_VAL="exitloop"
    ;;
 esac
 
