@@ -41,6 +41,8 @@ $DIALOG --clear --default-item "${GUESTS[0]}" --column-separator "%"\
 
 SELECTED=$(<"${INPUT}")
 
+RETURN_VAL="EXIT"
+
 # Convert selected server into the internal ID
 for (( i=0; i<${#GUESTS[@]}; i++ )); do
 if [ "${GUESTS[$i]}" = "${SELECTED}" ]; then
