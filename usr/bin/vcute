@@ -13,7 +13,6 @@ if [ "$DEBUG" = "1" ]; then
    echo "CONF_LOC      =${CONF_LOC} : where VCUTE config lives"
    echo "VDIR_LOC      =${VDIR_LOC} : where all the vserver guests live"
    echo "VCONF_LOC     =${VCONF_LOC} : where vserver conf lives"
-   echo "DEFAULT_LOC   =${DEFAULT_LOC} : where default vars live (the ones in this list)"
    echo "LIB_LOC       =${LIB_LOC} : where the libraries live"
    echo "LANG_LOC      =${LANG_LOC} : where the language files live"
    echo "CGROUP_LOC    =${CGROUP_LOC} : where the cgroup files live"
