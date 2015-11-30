@@ -44,7 +44,9 @@ testInstall
 # Cycle though all guests and get info on them
 collateBasicInfo
 
-debugPause
+if [ "$DEBUG" = "1" ]; then
+  debugPause
+fi
 
 BIGLOOP=0
 SUBLOOP=0
