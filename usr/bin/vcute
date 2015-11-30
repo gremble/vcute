@@ -44,6 +44,8 @@ testInstall
 # Cycle though all guests and get info on them
 collateBasicInfo
 
+debugPause
+
 BIGLOOP=0
 SUBLOOP=0
 while [ "$BIGLOOP" != "1" ]; do
@@ -55,7 +57,7 @@ VSID="${RETURN_VAL}"
 if [ "$DEBUG" = "1" ]; then
   echo  "VSID: ${VSID}"
   echo  "GUEST: ${GUESTS[$VSID]}"
-  sleep 2
+  debugPause
 fi
 
 while [  "$SUBLOOP" != "1" ]; do
