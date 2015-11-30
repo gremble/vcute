@@ -2,11 +2,19 @@
 
 # set vars and load libraries
 
-if  [ "$1" = "--debug" ]; then 
+SCRIPTNAME=`basename ${0}`
+
+if  [ "$1" = "--debug" ]; then
 DEBUG=1
+echo "$SCRIPTNAME"
 fi
 
 . /etc/default/vcute
+
+# allow alternate config
+if [ -f /etc/default/${SCRIPTNAME} ]; then
+. /etc/default/${SCRIPTNAME}
+fi
 
 if [ "$DEBUG" = "1" ]; then
    echo "Set vars..."
@@ -46,6 +54,7 @@ collateBasicInfo
 if [ "$DEBUG" = "1" ]; then
   debugPause
 fi
+
 
 BIGLOOP=0
 SUBLOOP=0
