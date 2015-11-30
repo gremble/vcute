@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+function debugPause {
+
+read -n1 -r -p "Press space to continue..." key
+
+return
+}

@@ -1,33 +1,110 @@
-#!/bin/sh
+#!/bin/bash
 
 function configMem () {
 
-#output of title screen as a reminder RSS: 
+#output of title screen as a reminder RSS:
 #
-# ${GUESTS_MEMALLOC_H[$i]}/${GUESTS_MEMCURRENT_H[$i]}/${GUESTS_MEMMAX_H[$i]} 
-# SWP: ${GUESTS_SWPALLOC_H[$i]}/${GUESTS_SWPCURRENT_H[$i]}/${GUESTS_SWPMAX_H[$i]} 
+# ${GUESTS_MEMALLOC_H[$i]}/${GUESTS_MEMCURRENT_H[$i]}/${GUESTS_MEMMAX_H[$i]}
+# SWP: ${GUESTS_SWPALLOC_H[$i]}/${GUESTS_SWPCURRENT_H[$i]}/${GUESTS_SWPMAX_H[$i]}
 # (Allocated/Current/Max)
-# So, this module will only need the parameter we already have from the initial info sweep, it doesn't need to get anything more.
+# So, this module will only need the parameter we already
+# have from the initial info sweep, it doesn't need to get
+# anything more.
 
 local i=$1
+local a=0
+local RUNNING="${GUESTS_RUNNING[$i]}"
+
+
+
+#set APPLIVE_DEFAULT based on whether the guest is running
+if [ "$RUNNING" = "1" ]; then
+APPLIVE_DEFAULT="n"
+APPLIVE_OPT="2"
+else
+APPLIVE_DEFAULT="y"
+APPLIVE_OPT="0"
+fi
+
+
+if [ "$DEBUG" = "1" ]; then
+  echo "Running: ${RUNNING}"
+  debugPause
+fi
+
 
 $DIALOG  --title "Memory Configuration" --ok-label "Submit" \
          --backtitle  "$(cat $LANG_LOC/name)" \
          --mixedform "Set the memory parameters here for ${GUESTS[$i]}." 25 80 0 \
-          "Allocated Memory       :" 2 1 "${GUESTS_MEMALLOC_H[$i]}"   2 25 20 0 0 \
-          "Current Memory         :" 3 1 "${GUESTS_MEMCURRENT_H[$i]}" 3 25 20 0 2 \
-          "Max Used Memory        :" 4 1 "${GUESTS_MEMMAX_H[$i]}"     4 25 20 0 2 \
-          "Allocated Memory       :" 5 1 "${GUESTS_SWPALLOC_H[$i]}"   5 25 20 0 0 \
-          "Current Memory         :" 6 1 "${GUESTS_SWPCURRENT_H[$i]}" 6 25 20 0 2 \
-          "Max Used Memory        :" 7 1 "${GUESTS_SWPMAX_H[$i]}"     7 25 20 0 2 \
-          "Apply Live? y/n        :" 8 1 "y"                          8 25 1 0 0 \
-          "Aplly persistently? y/n:" 9 1 "y"                          9 25 1 0 0 \
+          "Allocated Memory       :" 1 1 "${GUESTS_MEMALLOC_H[$i]}"   1 25 20 0 0 \
+          "Current Memory         :" 2 1 "${GUESTS_MEMCURRENT_H[$i]}" 2 25 20 0 2 \
+          "Max Used Memory        :" 3 1 "${GUESTS_MEMMAX_H[$i]}"     3 25 20 0 2 \
+          "Allocated Swap         :" 4 1 "${GUESTS_SWPALLOC_H[$i]}"   4 25 20 0 0 \
+          "Current Swap           :" 5 1 "${GUESTS_SWPCURRENT_H[$i]}" 5 25 20 0 2 \
+          "Max Used Swap          :" 6 1 "${GUESTS_SWPMAX_H[$i]}"     6 25 20 0 2 \
+          "Apply Live? y/n        :" 7 1 "${APPLIVE_DEFAULT}"         7 25 1 0 ${APPLIVE_OPT} \
+          "Aplly persistently? y/n:" 8 1 "y"                          8 25 1 0 0 \
+          2>"${INPUT}"
+
+if [ "$?" = "1" ]; then
+  return
+fi
 
 
+#put the of the dialog into an array $a
+readarray a < ${INPUT}
 
 if [ "$DEBUG" = "1" ]; then
-  sleep 5
+  echo "OUTPUT of dialog:"
+  echo "${a[@]}"
 fi
+
+cgroupLocation memory
+CLOC="${RETURN_VAL}"
+
+APLIVE="${a[6]//[$'\t\r\n']}"
+APPERS="${a[7]//[$'\t\r\n']}"
+NEW_MEMALLOC="${a[0]//[$'\t\r\n']}"
+NEW_SWPALLOC="${a[3]//[$'\t\r\n']}"
+
+if [ "$DEBUG" = "1" ]; then
+ echo "CLOC $CLOC
+ APLIVE $APLIVE
+ APPERS $APPERS
+ NEW_MEMALLOC $NEW_MEMALLOC
+ NEW_SWPALLOC $NEW_SWPALLOC"
+
+
+ echo "swp to allocate ${NEW_SWPALLOC//[$'\t\r\n']}"
+ echo "file to allocate: ${VCONF_LOC}/${GUESTS[$i]}/cgroup/memory.memsw.limit_in_bytes"
+ echo "mem to allocate ${NEW_MEMALLOC//[$'\t\r\n']}"
+ echo "file to allocate: ${VCONF_LOC}/${GUESTS[$i]}/cgroup/memory.limit_in_bytes"
+
+ echo "swp to allocate ${NEW_SWPALLOC//[$'\t\r\n']}"
+ echo "file to allocate: ${CLOC}/${GUESTS[$i]}/memory.memsw.limit_in_bytes"
+ echo "mem to allocate ${NEW_MEMALLOC//[$'\t\r\n']}"
+ echo "file to allocate: ${CLOC}/${GUESTS[$i]}/memory.limit_in_bytes"
+
+ fi
+
+
+if [ "${APLIVE}" = "y" ]; then
+# this order is necessary
+   echo "${NEW_SWPALLOC//[$'\t\r\n']}" > ${CLOC}/${GUESTS[$i]}/memory.memsw.limit_in_bytes
+   echo "${NEW_MEMALLOC//[$'\t\r\n']}" > ${CLOC}/${GUESTS[$i]}/memory.limit_in_bytes
+echo DONE live
+fi
+
+if [ "${APPERS}" = "y" ]; then
+   echo "${NEW_SWPALLOC}" > ${VCONF_LOC}/${GUESTS[$i]}/cgroup/memory.memsw.limit_in_bytes
+   echo "${NEW_MEMALLOC}" > ${VCONF_LOC}/${GUESTS[$i]}/cgroup/memory.limit_in_bytes
+echo DONE persistent
+fi
+
+if [ "$DEBUG" = "1" ]; then
+  debugPause
+fi
+
 
 return
 }

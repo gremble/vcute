@@ -1,0 +1,71 @@
+#!/bin/sh
+
+function mainMenu {
+
+DIALOG_CANCEL="Exit"
+
+
+# Consider converting from and to number formats with numfmt --from=??
+
+# This section fills an array (MENUMASS) which is then put into
+# $DIALOG it appears the only way to put a bunch of separate inputs
+# into a command.
+local MENUMASS=( )
+local p=0
+local i=0
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+#name
+MENUMASS[$p]="${GUESTS[$i]}"
+((p++))
+#columns - the '%' mark is the column separator
+# 1= stopped for some reason
+if [ "${GUESTS_RUNNING[$i]}" = "1" ]; then
+MENUMASS[$p]="${CROSS}%"
+else
+MENUMASS[$p]="${TIC}%"
+fi
+if [ "${GUESTS_MARKED[$i]}" = "1" ]; then
+MENUMASS[$p]="${MENUMASS[$p]}-%"
+else
+MENUMASS[$p]="${MENUMASS[$p]}$(cat $VCONF_LOC/${GUESTS[$i]}/apps/init/mark)%"
+fi
+MENUMASS[$p]="${MENUMASS[$p]}$(cat $VCONF_LOC/${GUESTS[$i]}/context)"
+((p++))
+MENUMASS[$p]="RSS: ${GUESTS_MEMALLOC_H[$i]}/${GUESTS_MEMCURRENT_H[$i]}/${GUESTS_MEMMAX_H[$i]}  SWP: ${GUESTS_SWPALLOC_H[$i]}/${GUESTS_SWPCURRENT_H[$i]}/${GUESTS_SWPMAX_H[$i]} (Allocated/Current/Max)"
+((p++))
+done
+
+$DIALOG --clear --default-item "${GUESTS[0]}" --column-separator "%"\
+ --backtitle "$(cat $LANG_LOC/name)"\
+ --item-help\
+ --cancel-label "Exit"\
+ --title "Select a Guest" --menu "" 18 75 68\
+ "NAME" "Running%Mark%XID" ""\
+ "${MENUMASS[@]}"\
+ 2>"${INPUT}"
+
+#exit if cancel pressed
+if [ "$?" = "1" ]; then
+  exit 0  
+fi
+
+SELECTED=$(<"${INPUT}")
+
+
+
+# Convert selected server into the internal ID
+for (( i=0; i<${#GUESTS[@]}; i++ )); do
+if [ "${GUESTS[$i]}" = "${SELECTED}" ]; then
+RETURN_VAL="${i}"
+fi
+done
+
+if [ "$(cat $LANG_LOC/gc_exit)" = "${SELECTED}" ]; then
+BIGLOOP=1
+SUBLOOP=1
+else
+SUBLOOP=0
+fi
+
+return
+}
